@@ -2,13 +2,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 const Thing = require('./models/Thing');
 mongoose.set('strictQuery', true)
-mongoose.connect('mongodb+srv://sell-new:sell0000@cluster0.fvuevnk.mongodb.net/?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
+mongoose.connect(process.env.MONGO_DB_URL,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }).then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
@@ -23,7 +25,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.post('/api/stuff', (req, res, next) => {
-  // console.log(req.body)
+  console.log(req.body)
   delete req.body._id;
   console.log(req.body)
   const thing = new Thing({
@@ -31,8 +33,15 @@ app.post('/api/stuff', (req, res, next) => {
   });
   console.log(thing)
   thing.save()
-    .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-    .catch(error => res.status(400).json({ error }));
+    .then(() => {
+      console.log("Ok");
+      res.status(201).json({ message: 'Objet enregistré !' });
+    })
+    .catch(error => {
+      console.log("Non Ok");
+      console.log(error);
+      res.status(400).json({ error })
+    });
 });
 
 
@@ -56,7 +65,7 @@ app.get('/api/stuff', (req, res, next) => {
     },
   ];
   res.status(200).json(stuff);
- 
+
 });
 
 module.exports = app;
