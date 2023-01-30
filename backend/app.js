@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
-// const path = require('path');
+const path = require('path');
 
 mongoose.set('strictQuery', true)
 
@@ -30,7 +30,7 @@ app.use('/api/stuff',stuffRoutes);
 
 app.use('/api/auth', userRoutes);
 
-// app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
 
